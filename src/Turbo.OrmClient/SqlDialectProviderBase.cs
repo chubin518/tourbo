@@ -46,7 +46,7 @@ namespace Turbo.OrmClient
                     }
                     else
                     {
-                        sqlClause.Params.Add(field.Name, field.GetValue(fields));
+                        sqlClause.Params.Add(Prefix + field.Name, field.GetValue(fields));
                         insertFields.Add(field.Name);
                     }
                 }
@@ -95,7 +95,7 @@ namespace Turbo.OrmClient
                 List<string> updateFields = new List<string>();
                 foreach (FieldDefinition field in modelDef.FieldDefinitions)
                 {
-                    sqlClause.Params.Add(field.Name, field.GetValue(fields));
+                    sqlClause.Params.Add(Prefix + field.Name, field.GetValue(fields));
                     if (field.IsPrimaryKey)
                     {
                         sqlClause.Where = string.Concat(field, "=", Prefix, field);

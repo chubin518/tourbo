@@ -35,7 +35,7 @@ namespace Turbo.OrmClient.Expressions
 
         public void CreateParam(object value, ref string name)
         {
-            name = (Params.ParameterNames.Count()).ToString();
+            name = _dialectProvider.Prefix + (Params.ParameterNames.Count()).ToString();
             Params.Add(name, value);
         }
 

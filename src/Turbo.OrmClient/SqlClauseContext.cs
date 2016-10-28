@@ -26,6 +26,7 @@ namespace Turbo.OrmClient
                 return sbClause.ToString();
             }
         }
+
         public string From { get; set; }
 
         public string Where { get; set; } = " 1=1 ";
