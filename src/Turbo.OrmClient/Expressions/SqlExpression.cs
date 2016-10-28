@@ -4,43 +4,69 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Turbo.OrmClient.Dapper;
 using Turbo.OrmClient.Extensions;
 
 namespace Turbo.OrmClient.Expressions
 {
-    public partial class SqlExpression<T> : ExpressionVisitor
+    public partial class SqlExpression<T> : ExpressionVisitor, ISqlExpression<T>
     {
-        public readonly SqlClauseContext SqlClause = new SqlClauseContext();
+        private readonly SqlClauseContext _sqlContext;
+
+        protected readonly ISqlDialectProvider _dialectProvider;
+
+        public DynamicParameters Params
+        {
+            get
+            {
+                return _sqlContext.Params;
+            }
+        }
 
         public ModelDefinition modelDef { get; private set; }
 
-        private ISqlDialectProvider SqlDialectProvider;
-
         public SqlExpression(ISqlDialectProvider dialectProvider)
         {
-            SqlDialectProvider = dialectProvider;
+            _dialectProvider = dialectProvider;
+            _sqlContext = new SqlClauseContext();
             modelDef = typeof(T).GetModelDefinition();
-            SqlClause.From = " FROM " + modelDef.Name;
+            _sqlContext.From = " FROM " + modelDef.Name;
+        }
+
+        public void CreateParam(object value, ref string name)
+        {
+            name = (Params.ParameterNames.Count()).ToString();
+            Params.Add(name, value);
         }
 
         public string SelectClause()
         {
-            return SqlDialectProvider.ToSelectStatement(modelDef, SqlClause);
+            if (_sqlContext.SelectFields == null
+                || _sqlContext.SelectFields.Count() <= 0)
+            {
+                _sqlContext.SelectFields = modelDef.FieldDefinitions?.Select(item => item.Name);
+            }
+            return _dialectProvider.ToSelectStatement(modelDef, _sqlContext);
         }
 
-        public string InsertClause()
+        public string InsertClause(object fields)
         {
-            return SqlDialectProvider.ToInsertStatement(modelDef, SqlClause);
+            return _dialectProvider.ToInsertStatement(fields, modelDef, _sqlContext);
         }
 
-        public string UpdateClause()
+        public string UpdateClause(object fields)
         {
-            return SqlDialectProvider.ToUpdateStatement(modelDef, SqlClause);
+            return _dialectProvider.ToUpdateStatement(fields, modelDef, _sqlContext);
         }
 
         public string DeleteClause()
         {
-            return SqlDialectProvider.ToDeleteStatement(modelDef, SqlClause);
+            return _dialectProvider.ToDeleteStatement(modelDef, _sqlContext);
+        }
+
+        public string CountClause()
+        {
+            return _dialectProvider.ToCountStatement(modelDef, _sqlContext);
         }
     }
 }

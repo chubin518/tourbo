@@ -9,19 +9,10 @@ namespace Turbo.OrmClient.Expressions
 {
     public partial class SqlExpression<T>
     {
-
-        public virtual SqlExpression<T> Insert(params string[] fields)
-        {
-            if (null == fields || fields.Count() == 0)
-            {
-                fields = modelDef.FieldDefinitions?.Where(item => !item.IsPrimaryKey).Select(item => item.Name).ToArray();
-            }
-            SqlClause.InsertFields = fields;
-            return this;
-        }
         public virtual SqlExpression<T> Insert(Expression<Func<T, object>> fields)
         {
-            return Insert(fields.GetFieldNames());
+            _sqlContext.InsertFields = fields.GetFieldNames();
+            return this;
         }
 
     }

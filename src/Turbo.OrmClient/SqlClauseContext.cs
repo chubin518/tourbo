@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Turbo.OrmClient.Dapper;
 
 namespace Turbo.OrmClient
 {
     public class SqlClauseContext
     {
+        public SqlClauseContext()
+        {
+            Params = new DynamicParameters();
+        }
+
+        public DynamicParameters Params { get; private set; }
+
         public string Select
         {
             get

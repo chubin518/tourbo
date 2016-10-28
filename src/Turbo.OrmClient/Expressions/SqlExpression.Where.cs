@@ -14,7 +14,7 @@ namespace Turbo.OrmClient.Expressions
         public virtual SqlExpression<T> Where(Expression<Func<T, bool>> predicate)
         {
             Visit(predicate);
-            SqlClause.Where = _sbWhere.ToString();
+            _sqlContext.Where = _sbWhere.ToString();
             return this;
         }
 
@@ -77,29 +77,27 @@ namespace Turbo.OrmClient.Expressions
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            string strValue = "";
+            object value;
             if (node.Value == null)
             {
-                strValue = "NULL";
+                value = DBNull.Value;
             }
             else
             {
                 switch (Type.GetTypeCode(node.Value.GetType()))
                 {
                     case TypeCode.Boolean:
-                        strValue = ((bool)node.Value ? 1 : 0).ToString();
-                        break;
-                    case TypeCode.String:
-                    case TypeCode.DateTime:
-                        strValue = string.Format("'{0}'", node.Value);
+                        value = (bool)node.Value ? 1 : 0;
                         break;
                     default:
-                        strValue = node.Value.ToString();
+                        value = node.Value;
                         break;
                 }
             }
-            _sbWhere.Append(strValue);
-            return base.VisitConstant(node);
+            string name = "";
+            CreateParam(value, ref name);
+            _sbWhere.Append(name);
+            return node;
         }
 
         protected override Expression VisitMember(MemberExpression node)
@@ -111,7 +109,7 @@ namespace Turbo.OrmClient.Expressions
                     _sbWhere.Append(node.Member.Name);
                 }
             }
-            return base.VisitMember(node);
+            return node;
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)

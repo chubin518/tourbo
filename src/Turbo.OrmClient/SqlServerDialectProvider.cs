@@ -4,11 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Turbo.OrmClient.Expressions;
 
 namespace Turbo.OrmClient
 {
     public class SqlServerDialectProvider : SqlDialectProviderBase
     {
+        public override ISqlExpression<T> SqlExpression<T>()
+        {
+            return new SqlServerExpression<T>(this);
+        }
+
         public override string SelectIdentitySql => "SELECT SCOPE_IDENTITY() AS ID";
 
         public override string ToSelectStatement(ModelDefinition modelDef, SqlClauseContext sqlClause)

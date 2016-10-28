@@ -5,7 +5,6 @@ using Turbo.OrmClient.Expressions;
 using System.Linq;
 using ServiceStack;
 using System.Collections.Generic;
-
 namespace Turbo.OrmClient.Test
 {
     [TestClass]
@@ -39,7 +38,14 @@ namespace Turbo.OrmClient.Test
         public void TestMethod2()
         {
             SqlExpression<Author> expression = new SqlExpression<Author>(new SqlServerDialectProvider());
-            string sql = expression.Select().Where(item => item.City != "").Distinct().Take(10).SelectClause();
+            string sql = expression.SelectClause();
+        }
+
+        [TestMethod]
+        public void TestMethod3()
+        {
+            Database db = new Database("default");
+            db.Insert<Author>(new { Active = false });
         }
     }
 }

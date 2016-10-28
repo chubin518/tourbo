@@ -11,11 +11,7 @@ namespace Turbo.OrmClient.Expressions
     {
         public SqlExpression<T> Select(params string[] fields)
         {
-            if (null == fields || fields.Count() <= 0)
-            {
-                fields = modelDef.FieldDefinitions?.Select(item => item.Name).ToArray();
-            }
-            SqlClause.SelectFields = fields;
+            _sqlContext.SelectFields = fields;
             return this;
         }
 
@@ -26,13 +22,13 @@ namespace Turbo.OrmClient.Expressions
 
         public SqlExpression<T> Distinct()
         {
-            SqlClause.Distinct = " DISTINCT ";
+            _sqlContext.Distinct = " DISTINCT ";
             return this;
         }
 
         public SqlExpression<T> GroupBy(params string[] fields)
         {
-            SqlClause.Group = Environment.NewLine + "GROUP BY " + string.Join(",", fields);
+            _sqlContext.Group = Environment.NewLine + "GROUP BY " + string.Join(",", fields);
             return this;
         }
 
@@ -43,7 +39,7 @@ namespace Turbo.OrmClient.Expressions
 
         public SqlExpression<T> OrderBy(params string[] fields)
         {
-            SqlClause.OrderBy = Environment.NewLine + "ORDER BY " + string.Join(",", fields);
+            _sqlContext.OrderBy = Environment.NewLine + "ORDER BY " + string.Join(",", fields);
             return this;
         }
 
@@ -54,7 +50,7 @@ namespace Turbo.OrmClient.Expressions
 
         public SqlExpression<T> OrderByDescending(params string[] fields)
         {
-            SqlClause.OrderBy = Environment.NewLine + "ORDER BY " + string.Join(",", fields) + " DESC";
+            _sqlContext.OrderBy = Environment.NewLine + "ORDER BY " + string.Join(",", fields) + " DESC";
             return this;
         }
 
@@ -67,20 +63,20 @@ namespace Turbo.OrmClient.Expressions
         {
             if (!string.IsNullOrWhiteSpace(sqlFilter))
             {
-                SqlClause.Having = Environment.NewLine + "Having " + sqlFilter;
+                _sqlContext.Having = Environment.NewLine + "Having " + sqlFilter;
             }
             return this;
         }
 
         public SqlExpression<T> Take(uint take = 0)
         {
-            SqlClause.Take = take;
+            _sqlContext.Take = take;
             return this;
         }
 
         public SqlExpression<T> Skip(uint skip = 0)
         {
-            SqlClause.Skip = skip;
+            _sqlContext.Skip = skip;
             return this;
         }
     }
