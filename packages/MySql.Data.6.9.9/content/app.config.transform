@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration>
-  <connectionStrings>
-    <add name="DefaultConnection" connectionString="server=127.0.0.1;user id=root;password=admin;persistsecurityinfo=True;database=tourismproduct" providerName="MySql.Data.MySqlClient" />
-  </connectionStrings>
   <system.data>
     <DbProviderFactories>
       <remove invariant="MySql.Data.MySqlClient" />

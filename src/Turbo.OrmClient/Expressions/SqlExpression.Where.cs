@@ -172,7 +172,7 @@ namespace Turbo.OrmClient.Expressions
                     break;
                 case "Contains":
                     @operator = isOpposite ? "NOT LIKE" : "LIKE";
-                    MethodCallProcess(node, @operator, string.Format("%{0}%", (node.Arguments[1] as ConstantExpression).Value));
+                    MethodCallProcess(node, @operator, string.Format("%{0}%", (node.Arguments[0] as ConstantExpression).Value));
                     break;
                 case "StartsWith":
                     @operator = isOpposite ? "NOT LIKE" : "LIKE";

@@ -10,6 +10,7 @@ namespace Turbo.OrmClient.Test
     [TestClass]
     public class UnitTest1
     {
+        
         [TestMethod]
         public void TestMethod1()
         {
@@ -44,7 +45,7 @@ namespace Turbo.OrmClient.Test
         [TestMethod]
         public void TestMethod3()
         {
-            Database db = new Database("default");
+            Database db = new Database("DefaultConnection");
             db.Insert<Author>(new { Active = false });
         }
     }

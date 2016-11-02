@@ -80,8 +80,12 @@ namespace Turbo.OrmClient
             return Connection.ExecuteScalar<TKey>(expression.SelectClause(), expression.Params);
         }
 
-        public long Count<T>(string sql, object param = null)
+        public long Count<T>(string sql=null, object param = null)
         {
+            if (string.IsNullOrWhiteSpace(sql))
+            {
+                sql = new SqlExpression<T>(DialectProvider).CountClause();
+            }
             return Connection.ExecuteScalar<long>(sql, param);
         }
 

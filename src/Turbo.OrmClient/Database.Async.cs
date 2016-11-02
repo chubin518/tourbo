@@ -65,8 +65,12 @@ namespace Turbo.OrmClient
             return Connection.ExecuteScalarAsync<TKey>(expression.SelectClause(), expression.Params);
         }
 
-        public Task<long> CountAsync<T>(string sql, object param = null)
+        public Task<long> CountAsync<T>(string sql=null, object param = null)
         {
+            if (string.IsNullOrWhiteSpace(sql))
+            {
+                sql = new SqlExpression<T>(DialectProvider).CountClause();
+            }
             return Connection.ExecuteScalarAsync<long>(sql, param);
         }
 
